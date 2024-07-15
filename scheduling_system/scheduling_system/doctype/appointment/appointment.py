@@ -65,14 +65,14 @@ def get_events(start, end, filters=None):
         ] + filters,
     )
         
-    for events in events_list:
-        title = events.start_date.strftime('%H:%M') + " - " + events.name
+    for event in events_list:
+        title = event.start_date.strftime('%H:%M') + " - " + event.name
         events.append({
-            "name": events.name,
-            "start": events.start_date.strftime('%Y-%m-%d %H:%M:%S'),
-            "end": events.end_date.strftime('%Y-%m-%d %H:%M:%S'),
+            "name": event.name,
+            "start": event.start_date.strftime('%Y-%m-%d %H:%M:%S'),
+            "end": event.end_date.strftime('%Y-%m-%d %H:%M:%S'),
             "title": title,
-            "status": events.status,
+            "status": event.status,
             "allDay": False,
         })
     return events
