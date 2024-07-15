@@ -11,27 +11,17 @@ To provide a scheduling solution that includes appointment creation, conflict va
 
 ### Installation Steps
 
-1. Clone the repository:
+1. Get the app:
     ```bash
-    git clone [<repository-url>](https://github.com/CafePraThi/scheduling_system)
+    bench get-app [<URL_OF_THIS_REPO>](https://github.com/CafePraThi/scheduling_system) --init-bench
     ```
 
-2. Navigate to the bench directory:
-    ```bash
-    cd $PATH_TO_YOUR_BENCH
-    ```
-
-3. Get the app:
-    ```bash
-    bench get-app [<URL_OF_THIS_REPO>](https://github.com/CafePraThi/scheduling_system) --branch develop
-    ```
-
-4. Install the app:
+2. Install the app:
     ```bash
     bench install-app scheduling_system
     ```
 
-5. Install the app on site:
+3. Install the app on site:
     ```bash
     bench --site your-site install-app scheduling_system
     ```
