@@ -4,10 +4,10 @@
 # import frappe
 from frappe.model.document import Document
 import frappe
-from frappe.utils import getdate
 import json
 from datetime import datetime, timedelta
 from frappe import _
+from datetime import datetime, timedelta
 
 class Appointment(Document):
     def validate(self):
@@ -15,46 +15,35 @@ class Appointment(Document):
         self.check_for_seller_availability()
         
     def check_for_seller_availability(self):
+        from frappe.utils import flt
         
-        existing_appointment = frappe.db.sql("""
-            SELECT
-                name
-            FROM
-                `tabAppointment`
-            WHERE
-                seller = %(seller)s
-                AND status != 'Canceled'
-                AND name != %(name)s
-                AND (
-                    start_date < %(end_date)s AND end_date > %(start_date)s
-                )
-                AND docstatus < 2
-        """, {
-            'seller': self.seller,
-            'name': self.name or '',
-            'start_date': self.start_date,
-            'end_date': self.end_date
-        })
-        
-        if existing_appointment:
-            frappe.throw(f"The seller {self.seller} is not available during the selected time slot.")
+        # Query the database using Frappe ORM
+        conflicting_appointments = frappe.get_all(
+            'Appointment',
+            filters={
+                'seller': self.seller,
+                'status': ['!=', 'Canceled'],
+                'name': ['!=', self.name or ''],
+                'start_date': ['<', self.end_date],
+                'end_date': ['>', self.start_date],
+                'docstatus': ['<', 2]
+            },
+            fields=['name']
+        )
 
-				
+        # Check if there are any conflicting appointments
+        if conflicting_appointments:
+            frappe.throw(_(f"The seller {self.seller} is not available during the selected time slot."))
 
 
-
-from datetime import datetime, timedelta
 
 def calculate_end_date(start_date, duration):
-    # Ensure start_date is a datetime object
     if isinstance(start_date, str):
         start_date = datetime.strptime(start_date, '%Y-%m-%d %H:%M:%S')
 
-    # Convert duration to timedelta
     hours, minutes, seconds = map(int, duration.split(':'))
     duration = timedelta(hours=hours, minutes=minutes, seconds=seconds)
 
-    # Calculate end date
     end_date = start_date + duration
 
     return end_date.strftime('%Y-%m-%d %H:%M:%S')
@@ -67,7 +56,7 @@ def get_events(start, end, filters=None):
 
     filters = json.loads(filters) if filters else {}
 
-    event_list = frappe.get_all(
+    events_list = frappe.get_all(
         "Appointment",
         fields=["name", "start_date", "end_date", "client_name", "status"],
         filters=[
@@ -76,19 +65,16 @@ def get_events(start, end, filters=None):
         ] + filters,
     )
         
-    for event in event_list:
-        color = {
-            'Scheduled': '#28a745',  # green
-            'Finished': '#007bff',   # blue
-            'Canceled': '#dc3545',   # red
-        }.get(event.status, '#6c757d')  # grey for other statuses
-
+    for events in events_list:
+        title = events.start_date.strftime('%H:%M') + " - " + events.name
         events.append({
-            "name": event.name,
-            "start": event.start_date.strftime('%Y-%m-%d %H:%M:%S'),
-            "end": event.end_date.strftime('%Y-%m-%d %H:%M:%S'),
-            "title": event.client_name,
-            "status": event.status,
-            "allDay": False,  # add this line
+            "name": events.name,
+            "start": events.start_date.strftime('%Y-%m-%d %H:%M:%S'),
+            "end": events.end_date.strftime('%Y-%m-%d %H:%M:%S'),
+            "title": title,
+            "status": events.status,
+            "allDay": False,
         })
     return events
+
+

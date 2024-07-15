@@ -26,12 +26,14 @@
   {
    "fieldname": "client_name",
    "fieldtype": "Data",
-   "label": "Client Name"
+   "label": "Client Name",
+   "reqd": 1
   },
   {
    "fieldname": "start_date",
    "fieldtype": "Datetime",
-   "label": "Start date"
+   "label": "Start date",
+   "reqd": 1
   },
   {
    "fieldname": "end_date",
@@ -42,7 +44,8 @@
   {
    "fieldname": "duration",
    "fieldtype": "Time",
-   "label": "Duration"
+   "label": "Duration",
+   "reqd": 1
   },
   {
    "fieldname": "description",
@@ -58,8 +61,10 @@
   {
    "fieldname": "seller",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Seller",
-   "options": "User"
+   "options": "User",
+   "reqd": 1
   },
   {
    "fieldname": "section_break_hhib",
@@ -73,7 +78,7 @@
  "index_web_pages_for_search": 1,
  "is_calendar_and_gantt": 1,
  "links": [],
- "modified": "2024-07-12 14:11:29.651659",
+ "modified": "2024-07-14 20:14:32.728473",
  "modified_by": "Administrator",
  "module": "scheduling_system",
  "name": "Appointment",
@@ -89,6 +94,18 @@
    "read": 1,
    "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Guest",
    "share": 1,
    "write": 1
   }

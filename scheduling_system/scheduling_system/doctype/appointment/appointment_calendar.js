@@ -5,16 +5,17 @@ frappe.views.calendar['Appointment'] = {
       id: 'name',
       title: 'title',
       status: 'status',
+      alldata: 'allDay',
   },
   get_events_method: 'scheduling_system.scheduling_system.doctype.appointment.appointment.get_events',
   get_css_class: function (data) {
     console.log(data.status);
    if (data.status == "Scheduled") {
-			return "danger";
+			return "info";
 		} else if (data.status == "Finished") {
-			return "warning";
-		} else if (data.status == "Canceled") {
 			return "success";
+		} else if (data.status == "Canceled") {
+			return "danger";
 		}
   }
 }
